@@ -74,36 +74,6 @@ static void create_if_does_not_exist(const std::string & path)
     }
 }
 
-static std::vector<path::Capability>
-get_capability_from_module_name(const std::string& module_name, std::vector<path::Capability>& caps) {
-    std::vector<path::Capability> ret;
-
-    for (auto c: caps) {
-        if (c.module == module_name) {
-            ret.emplace_back(c);
-            break;
-        }
-    }
-
-    return ret;
-}
-
-static std::vector<path::Capability>
-get_module_capabilities_from_namespaces(const std::unordered_set<std::string>& module_names, std::vector<path::Capability>& caps)
-{
-    std::vector<path::Capability> module_caps;
-
-    for (auto &c: caps)
-    {
-        if (module_names.find(c.module) != module_names.end())
-        {
-            module_caps.emplace_back(c);
-        }
-    }
-
-    return module_caps;
-}
-
 namespace path
 {
 
@@ -139,16 +109,16 @@ void libyang_log_callback(LY_LOG_LEVEL level, const char *msg, const char *path)
 }
 }
 
-ydk::path::RepositoryPtr::RepositoryPtr ()
-  : using_temp_directory(true)
+ydk::path::RepositoryPtr::RepositoryPtr (path::ModelCachingOption caching_option)
+  : using_temp_directory(true), caching_option(caching_option)
 {
     path = get_models_download_path();
     ly_set_log_clb(libyang_log_callback, 1);
 }
 
 
-ydk::path::RepositoryPtr::RepositoryPtr(const std::string& search_dir)
-  : path{search_dir}, using_temp_directory(false)
+ydk::path::RepositoryPtr::RepositoryPtr(const std::string& search_dir, path::ModelCachingOption caching_option)
+  : path{search_dir}, using_temp_directory(false), caching_option(caching_option)
 {
     if (!file_exists(path))
     {
@@ -292,10 +262,17 @@ ydk::path::RepositoryPtr::create_ly_context() {
 
     if(using_temp_directory)
     {
-        for(auto model_provider : get_model_providers())
+        if (caching_option == ModelCachingOption::PER_DEVICE)
         {
-            path+="/"+model_provider->get_hostname_port();
-            break;
+            for(auto model_provider : get_model_providers())
+            {
+                path+="/"+model_provider->get_hostname_port();
+                break;
+            }
+        }
+        else
+        {
+            path += "/common_cache";
         }
         create_if_does_not_exist(path);
         YLOG_INFO("Path where models are to be downloaded: {}", path);
@@ -497,11 +474,11 @@ std::vector<ydk::path::ModelProvider*> ydk::path::RepositoryPtr::get_model_provi
     return model_providers;
 }
 
-ydk::path::Repository::Repository () : m_priv_repo(std::make_shared<RepositoryPtr>())
+ydk::path::Repository::Repository (path::ModelCachingOption caching_option) : m_priv_repo(std::make_shared<RepositoryPtr>(caching_option))
 {
 }
 
-ydk::path::Repository::Repository(const std::string& search_dir) : m_priv_repo(std::make_shared<RepositoryPtr>(search_dir))
+ydk::path::Repository::Repository(const std::string& search_dir, path::ModelCachingOption caching_option) : m_priv_repo(std::make_shared<RepositoryPtr>(search_dir, caching_option))
 {
 }
 

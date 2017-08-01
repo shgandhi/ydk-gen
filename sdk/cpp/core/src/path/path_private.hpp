@@ -24,16 +24,9 @@
 #ifndef YDK_PRIVATE_HPP
 #define YDK_PRIVATE_HPP
 
-#include <algorithm>
 #include <map>
-#include <cstdlib>
-#include <functional>
 #include <iostream>
-#include <cstring>
-#include <cassert>
-#include <sstream>
 #include <unordered_set>
-#include <unordered_map>
 
 #include "libyang/libyang.h"
 #include "libyang/tree_schema.h"
@@ -52,8 +45,8 @@ namespace ydk {
 
         class RepositoryPtr : public std::enable_shared_from_this<RepositoryPtr> {
         public:
-            RepositoryPtr();
-            RepositoryPtr(const std::string& search_dir);
+            RepositoryPtr(ModelCachingOption caching_option);
+            RepositoryPtr(const std::string& search_dir, ModelCachingOption caching_option);
             ~RepositoryPtr();
 
             std::shared_ptr<RootSchemaNode> create_root_schema(const std::vector<std::unordered_map<std::string, path::Capability>>& lookup_tables,
@@ -88,6 +81,7 @@ namespace ydk {
          private:
             std::vector<ModelProvider*> model_providers;
             bool using_temp_directory;
+            ModelCachingOption caching_option;
         };
 
         class SchemaNodeImpl : public SchemaNode
@@ -165,8 +159,8 @@ namespace ydk {
         class DataNodeImpl : public DataNode{
 
         public:
-            DataNodeImpl(DataNode* parent, struct lyd_node* node, const std::shared_ptr<RepositoryPtr> repo);
-
+            explicit DataNodeImpl(DataNode* parent, struct lyd_node* node, const std::shared_ptr<RepositoryPtr> repo);
+            explicit DataNodeImpl(DataNodeImpl* other);
             //no copy constructor
             DataNodeImpl(const DataNodeImpl& dn) = delete;
 
@@ -211,7 +205,7 @@ namespace ydk {
             std::shared_ptr<DataNode> get_dn_for_desc_node(struct lyd_node* desc_node) const;
 
         private:
-
+            void initialize_child_map();
             DataNode& create_helper(const std::string& path, const std::string& value);
 
             void populate_new_schemas_from_path(const std::string& path);
@@ -271,7 +265,7 @@ namespace ydk {
 
             ~RpcImpl();
 
-            std::shared_ptr<DataNode> operator()(const ServiceProvider& provider);
+            DataNodeCollection operator()(const ServiceProvider& provider);
 
             DataNode& get_input_node() const;
 
