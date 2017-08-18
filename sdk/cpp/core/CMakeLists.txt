@@ -419,6 +419,7 @@ string(STRIP ${GRPC_CPP_PLUGIN} GRPC_CPP_PLUGIN)
 execute_process(COMMAND protoc -I ./project_libgnmi --grpc_out=./project_libgnmi/generated/ --plugin=protoc-gen-grpc=${GRPC_CPP_PLUGIN} ./project_libgnmi/gnmi.proto)
 execute_process(COMMAND protoc -I ./project_libgnmi --cpp_out=./project_libgnmi/generated/ ./project_libgnmi/gnmi.proto)
 
+file(COPY ${libgnmi_headers} ${libgnmi_sources} DESTINATION ${PROJECT_SOURCE_DIR}/src)
 install(FILES ${libgnmi_headers} ${libgnmi_sources} DESTINATION ${libgnmi_include_location})
 
 # Add LibYang
