@@ -25,6 +25,7 @@ using namespace ydk;
 using namespace std;
 
 string address = "127.0.0.1:50051";
+bool is_secure = true;
 
 TEST_CASE("gnmi_xr")
 {
@@ -32,7 +33,7 @@ TEST_CASE("gnmi_xr")
 
     int ok = 0;
 
-    int result = client.connect(address);
+    int result = client.connect(address, is_secure);
 
     std::cout << "result: " << result << std::endl;
     REQUIRE(result == ok);
@@ -62,7 +63,7 @@ TEST_CASE("gnmi_create")
 
     int ok = 0;
 
-    int result = client.connect(address);
+    int result = client.connect(address, is_secure);
     REQUIRE(result == ok);
 }
 
@@ -72,7 +73,7 @@ TEST_CASE("gnmi_edit_get_config")
 
     int ok = 0;
 
-    int result = client.connect(address);
+    int result = client.connect(address, is_secure);
     REQUIRE(result == ok);
 
     string reply = client.execute_wrapper(
@@ -114,7 +115,7 @@ TEST_CASE("RpcInvalid")
     : stub_(gNMI::NewStub(channel)){}
     int ok = 0;
 
-    int result = client.connect(address);
+    int result = client.connect(address, is_secure);
     REQUIRE(result == ok);
 
     try
@@ -145,7 +146,7 @@ TEST_CASE("RpcInvalid")
 
     int ok = 0;
 
-    int result = client.connect(address);
+    int result = client.connect(address, is_secure);
     REQUIRE(result == ok);
 
     try
@@ -170,7 +171,7 @@ TEST_CASE("RpcInvalid")
 //    std::unique_ptr<gNMIClient> client;;
 //    int ok = 0;
 //
-//    int result = client.connect(address);
+//    int result = client.connect(address, is_secure);
 //    REQUIRE(result == ok);
 //
 //    try
@@ -200,7 +201,7 @@ TEST_CASE("EmptyRpc")
 
     int ok = 0;
 
-    int result = client.connect(address);
+    int result = client.connect(address, is_secure);
     REQUIRE(result == ok);
 
     try
@@ -235,9 +236,9 @@ TEST_CASE("gnmi_multiple_clients")
     gNMIClient client14(grpc::CreateChannel(address, grpc::InsecureChannelCredentials()));
     gNMIClient client15(grpc::CreateChannel(address, grpc::InsecureChannelCredentials()));
 
-    int result = client1.connect(address) && client2.connect(address) && client3.connect(address) && client4.connect(address) && client5.connect(address)
-         && client6.connect(address) && client7.connect(address) && client8.connect(address) && client9.connect(address) && client10.connect(address)
-         && client11.connect(address) && client12.connect(address) && client13.connect(address) && client14.connect(address) && client15.connect(address);
+    int result = client1.connect(address, is_secure) && client2.connect(address, is_secure) && client3.connect(address, is_secure) && client4.connect(address, is_secure) && client5.connect(address, is_secure)
+         && client6.connect(address, is_secure) && client7.connect(address, is_secure) && client8.connect(address, is_secure) && client9.connect(address, is_secure) && client10.connect(address, is_secure)
+         && client11.connect(address, is_secure) && client12.connect(address, is_secure) && client13.connect(address, is_secure) && client14.connect(address, is_secure) && client15.connect(address, is_secure);
     REQUIRE(result == 0);
 
 }

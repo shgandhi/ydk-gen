@@ -153,6 +153,8 @@ set(libydk_src
     src/netconf_provider.cpp
     src/netconf_service.cpp
     src/path/netconf_session.cpp
+    src/gnmi.grpc.pb.cc
+    src/gnmi.pb.cc
     src/gnmi_client.cpp    
     src/gnmi_provider.cpp
     src/path/gnmi_session.cpp
@@ -206,6 +208,8 @@ set(libydk_install_headers
     src/executor_service.hpp
     src/filters.hpp
     src/logging_callback.hpp
+    src/gnmi.grpc.pb.h
+    src/gnmi.pb.h
     src/gnmi_provider.hpp
     src/gnmi_client.hpp
     src/gnmi_service.hpp
