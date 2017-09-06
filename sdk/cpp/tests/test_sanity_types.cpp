@@ -256,7 +256,7 @@ TEST_CASE("test_types_deci64")
     REQUIRE(reply);
 
     //CREATE
-    r_1->ytypes->built_in_t->deci64 = Decimal64("23.14");
+    r_1->ytypes->built_in_t->deci64 = ydk::Decimal64("23.14");
     reply = crud.create(provider, *r_1);
     REQUIRE(reply);
 

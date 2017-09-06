@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.3)
 project(ydk_gnmi)
 
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMakeModules/")
+
 find_package(Protobuf REQUIRED)
+find_package(GRPC REQUIRED)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
@@ -17,6 +20,10 @@ set(GNMI_PB_CPP_FILE "${GENERATED_PROTOBUF_PATH}/gnmi.pb.cc")
 set(GNMI_PB_H_FILE "${GENERATED_PROTOBUF_PATH}/gnmi.pb.h")
 set(GNMI_GRPC_PB_CPP_FILE "${GENERATED_PROTOBUF_PATH}/gnmi.grpc.pb.cc")
 set(GNMI_GRPC_PB_H_FILE "${GENERATED_PROTOBUF_PATH}/gnmi.grpc.pb.h")
+
+execute_process(COMMAND  which grpc_cpp_plugin OUTPUT_VARIABLE GRPC_CPP_PLUGIN)
+string(STRIP ${GRPC_CPP_PLUGIN} GRPC_CPP_PLUGIN)
+
 add_custom_command(
     OUTPUT "${GNMI_PB_H_FILE}"
            "${GNMI_PB_CPP_FILE}"
@@ -29,7 +36,7 @@ add_custom_command(
     COMMAND ${PROTOBUF_PROTOC_EXECUTABLE}
     ARGS "--proto_path=${PROTO_PATH}"
          "--grpc_out=${GENERATED_PROTOBUF_PATH}"
-         "--plugin=protoc-gen-grpc=/usr/local/bin/GRPC_CPP_PLUGIN"
+         "--plugin=protoc-gen-grpc=${GRPC_CPP_PLUGIN}"
          "${GNMI_PROTO}"
     )
 set(GENERATED_PROTOBUF_FILES ${GNMI_PB_H_FILE} ${GNMI_PB_CPP_FILE}

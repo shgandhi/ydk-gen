@@ -417,7 +417,7 @@ file(DOWNLOAD "https://raw.githubusercontent.com/shgandhi/reference/master/rpc/g
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/project_libgnmi/generated/)
 
 execute_process(COMMAND  which grpc_cpp_plugin OUTPUT_VARIABLE GRPC_CPP_PLUGIN)
-string(STRIP ${GRPC_CPP_PLUGIN} GRPC_CPP_PLUGIN)
+string(STRIP "${GRPC_CPP_PLUGIN}" GRPC_CPP_PLUGIN)
 
 # Compile gNMI proto to generate headers and sources
 execute_process(COMMAND protoc -I ./project_libgnmi --grpc_out=./project_libgnmi/generated/ --plugin=protoc-gen-grpc=${GRPC_CPP_PLUGIN} ./project_libgnmi/gnmi.proto)
@@ -479,7 +479,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 set(libgnmi_client_sources "src/gnmi_client.cpp" ${libgnmi_headers} ${libgnmi_sources})
 add_library(gnmi STATIC ${libgnmi_client_sources})
-target_link_libraries(gnmi grpc++_unsecure grpc gpr ${PROTOBUF_LIBRARY})
+target_link_libraries(gnmi grpc++ grpc gpr ${PROTOBUF_LIBRARY})
 
 add_library(ydk STATIC ${libydk_src} ${libnetconf_inc_objs} ${libyang_inc_objs})
 

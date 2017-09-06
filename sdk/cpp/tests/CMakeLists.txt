@@ -92,7 +92,7 @@ target_link_libraries(${YDK_UNITTEST_TARGET_NAME}
     ${dl_location}
     ${PYTHON_LIBRARIES}
     ${LIBGNMI_LIBRARY}
-    grpc++_unsecure 
+    grpc++ 
     grpc 
     gpr 
     ${PROTOBUF_LIBRARY}

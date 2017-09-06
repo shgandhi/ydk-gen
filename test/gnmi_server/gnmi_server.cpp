@@ -276,8 +276,8 @@ void RunServer()
         std::string server_key;
         std::string server_cert;
     
-        std::ifstream kf("./keys/ems-key.pem");
-        std::ifstream cf("./keys/ems.pem");
+        std::ifstream kf("../keys/ems-key.pem");
+        std::ifstream cf("../keys/ems.pem");
     
         server_key.assign((std::istreambuf_iterator<char>(kf)),(std::istreambuf_iterator<char>()));
         server_cert.assign((std::istreambuf_iterator<char>(cf)),(std::istreambuf_iterator<char>()));
